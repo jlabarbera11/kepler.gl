@@ -940,6 +940,16 @@ export function getDatasetFieldIndexForFilter(dataset, filter) {
   return notNullorUndefined(fieldIndex) ? fieldIndex : -1;
 }
 
+export const featureToFilterValue = (feature, filterId) => ({
+  ...feature,
+  id: feature.id,
+  properties: {
+    ...feature.properties,
+    filterId
+  }
+});
+export const getFilterIdInFeature = f => get(f, ['properties', 'filterId']);
+
 /**
  * Generates polygon filter
  * @param layers array of layers
@@ -957,31 +967,32 @@ export function generatePolygonFilter(layers, feature) {
     layerId: [],
     name: []
   });
-
-  return updatePolygonFilter({
-    ...getDefaultFilter(dataId),
+  const filter = getDefaultFilter(dataId);
+  return {
+    ...filter,
     fixedDomain: true,
     type: FILTER_TYPES.polygon,
     name,
-    layerId
-  }, feature);
+    layerId,
+    value: featureToFilterValue(feature, filter.id)
+  };
 }
 
-/**
- * Updates polygon filter
- * @param filter
- * @param feature
- * @return {object} Filter
- */
-export function updatePolygonFilter(filter, feature) {
-  return {
-    ...filter,
-    value: {
-      ...feature,
-      id: feature.id
-    }
-  }
-}
+// /**
+//  * Updates polygon filter
+//  * @param filter
+//  * @param feature
+//  * @return {object} Filter
+//  */
+// export function updatePolygonFilter(filter, feature) {
+//   return {
+//     ...filter,
+//     value: {
+//       ...feature,
+//       id: feature.id
+//     }
+//   }
+// }
 
 function isLayerFilter(filter) {
   return LAYER_FILTERS.includes(filter.type);

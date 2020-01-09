@@ -24,6 +24,7 @@
  */
 import PropTypes from 'prop-types';
 import React from 'react';
+import window from 'global/window';
 
 class FileDrop extends React.PureComponent {
   static isIE = () =>
@@ -99,7 +100,7 @@ class FileDrop extends React.PureComponent {
     window.addEventListener('dragover', this.handleWindowDragOverOrDrop);
     window.addEventListener('drop', this.handleWindowDragOverOrDrop);
   }
-  
+
   componentDidUpdate(prevProps) {
     if (prevProps.frame !== this.props.frame) {
       this.resetDragging();
@@ -107,7 +108,7 @@ class FileDrop extends React.PureComponent {
       this.startFrameListeners(this.props.frame);
     }
   }
-  
+
   componentWillUnmount() {
     this.stopFrameListeners(this.props.frame);
     window.removeEventListener('dragover', this.handleWindowDragOverOrDrop);
